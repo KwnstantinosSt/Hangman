@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HangmanGame.Context;
 
-public class DbContext : Microsoft.EntityFrameworkCore.DbContext
+public class MyDbContext : DbContext
 {
-    public DbContext(DbContextOptions<DbContext> options) : base(options)
+    public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
     {
         
     }
