@@ -1,4 +1,9 @@
 @page "/Players"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Options
+@using HangmanGame.Settings
+@inject IOptionsMonitor<AppSettings> _settings;
+@implements IAsyncDisposable
 
 <h2 class="text-white text-center">Active Players:</h2>
 
@@ -15,13 +20,63 @@
         <tr class="text-white">
             <th scope="row">1</th>
             <td>Konstantinos</td>
-            <td><button class="btn btn-dark p-2">Play</button></td>
+            <td><button @onclick="Send" disabled="@(!IsConnected)" class="btn btn-dark p-2">Play</button></td>
         </tr>
         <tr class="text-white">
             <th scope="row">2</th>
             <td>Angeliki</td>
-            <td><button class="btn btn-dark p-2">Play</button></td>
+            <td><button @onclick="Send" disabled="@(!IsConnected)" class="btn btn-dark p-2">Play</button></td>
         </tr>
         </tbody>
     </table>
 </div>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Name { get; set; }
+    
+    private HubConnection? hubConnection;
+    private List<string> messages = new List<string>();
+    private string? userInput;
+    private string? messageInput;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userInput = Name;
+        messageInput = $"{userInput} is connected";
+        
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{_settings.CurrentValue.Domain}/playershub")
+            .Build();
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            var encodedMsg = $"{user}: {message}";
+            messages.Add(encodedMsg);
+            InvokeAsync(StateHasChanged);
+            Console.WriteLine($"{messageInput} -- {userInput}");
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", userInput, messageInput);
+        }
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
