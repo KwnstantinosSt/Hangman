@@ -2,21 +2,62 @@
 
 <h3 class="text-white text-center">Game</h3>
 
-<div class="row mt-5">
-    <div class="col-md-6" align="right">
-        <div class="game">
-            <img class="me-5" src="assets/hangman-0.svg"/>
+    <div class="row mt-1">
+        <div class="col-12 mt-5 pt-2 text-black text-center">
+            <h1>Word</h1>
+            <h2>A_ _ _ _ _ _ _ _ _ _ _ _ _S</h2>
         </div>
     </div>
-    <div class="col-md-6 col-sm-12 mt-2 pt-2" align="left">
-        <MyButton Name="A" /> 
-        <MyButton Name="B" /> 
+<div class="row mt-5">
+    <div class="col-sm-12 col-md-6" align="right">
+        <div class="game">
+            <img class="me-5" src="assets/hangman-6.svg"/>
+        </div>
     </div>
+    <div class="col-sm-12 col-md-2 mt-2 pt-2">
+        @foreach(var letter in Letters)
+        {
+            <MyButton Name=@letter/>
+        }
+    </div>
+      <div class="col-sm-12 col-md-2">
+       <div class="table-responsive-md w-100 m-auto">
+            <table class="table">
+                <thead>
+                <tr class="text-white">
+                    <th scope="col">Player Name</th>
+                    <th scope="col">Wins</th>
+                    <th scope="col">Loses</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-white">
+                    <td>Konstantinos</td>
+                    <td>2</td>
+                    <td>0</td>
+                </tr>
+                <tr class="text-white">
+                    <td>Angeliki</td>
+                    <td>0</td>
+                    <td>2</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr class="m-2"/>
     <div class="row mt-5">
         <div class="form-group">
-            <textarea class="form-control"></textarea>
-            <input class="form-control" type="text"/>
-            <button class="btn-dark">Send</button>
+            <h3 class="text-center text-black">Chat</h3>
+            <textarea class="form-control p-1 m-1"></textarea>
+            <input class="form-control p-1 m-1" type="text"/>
+            <button class="btn btn-dark p-1 m-1">Send</button>
         </div>
     </div>
 </div>
+
+
+@code
+{
+    private readonly string Letters = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ";
+}
